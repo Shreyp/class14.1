@@ -17,10 +17,22 @@ connection.connect(function(err) {
   console.log("Connected as id: %s", connection.threadId)
 })
 
-var PORT = process.env.NODE_ENV || 9001;
+var PORT = process.env.NODE_ENV || 7080;
 
-app.get('/', function(req, res) {
-  connection.query("SELECT * FROM coolness;", function(err, result) {
+app.get('/actors', function(req, res) {
+  connection.query("SELECT id, name FROM coolness;", function(err, result) {
+    res.send(result);
+  });
+});
+
+app.get('/coolness-chart', function(req, res) {
+  connection.query("SELECT coolness_points, name FROM coolness order by coolness_points desc;", function(err, result) {
+    res.send(result);
+  });
+});
+
+app.get('/:type', function(req, res) {
+  connection.query("SELECT name FROM coolness WHERE attitude = '" + req.params.type + "';", function(err, result) {
     res.send(result);
   });
 });
